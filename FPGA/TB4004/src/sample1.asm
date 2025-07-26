@@ -1,0 +1,3 @@
+IN B
+OUT B
+JMP 0000
