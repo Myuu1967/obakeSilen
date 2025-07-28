@@ -3,29 +3,26 @@ module stack_pc_4bit (
     input  wire        reset,
     input  wire        push,       // PCをスタックに退避
     input  wire        pop,        // スタックから復帰
-    input  wire        pc_inc,     // PCインクリメント
+    input  wire        pc_inc,     // PCをインクリメント
     input  wire        pc_load,    // PC書き込み
-    input  wire [1:0]  pc_sel,     // 00=low, 01=mid, 10=high を選択
+    input  wire [1:0]  pc_sel,     // 00=low, 01=mid, 10=high
     input  wire [3:0]  data_in,    // 内部4ビットバス
-    output reg  [3:0]  data_out    // 内部4ビットバス（読み出し用）
+    output reg  [3:0]  data_out,   // 内部4ビットバス（読み出し）
+    output reg  [3:0]  pc_low,
+    output reg  [3:0]  pc_mid,
+    output reg  [3:0]  pc_high
 );
 
-    // PCを3段に分けて保持
-    reg [3:0] pc_low;
-    reg [3:0] pc_mid;
-    reg [3:0] pc_high;
-
-    // スタックも3段に分けて保持
+    // 8段のスタック
     reg [3:0] stack_low  [0:7];
     reg [3:0] stack_mid  [0:7];
     reg [3:0] stack_high [0:7];
 
-    // スタックポインタ（0～7）
-    reg [2:0] sp;
+    reg [2:0] sp;  // スタックポインタ
 
     integer i;
 
-    // 読み出しはpc_selで選択
+    // data_out (選択した段を返す)
     always @(*) begin
         case (pc_sel)
             2'b00: data_out = pc_low;
@@ -46,9 +43,8 @@ module stack_pc_4bit (
                 stack_mid[i]  <= 4'h0;
                 stack_high[i] <= 4'h0;
             end
-
         end else begin
-            // PC書き込み（選択段のみ書き換え）
+            // PC書き込み
             if (pc_load) begin
                 case (pc_sel)
                     2'b00: pc_low  <= data_in;
@@ -56,21 +52,21 @@ module stack_pc_4bit (
                     2'b10: pc_high <= data_in;
                 endcase
 
-            // PUSH：PCをスタックに退避
+            // PUSH（退避）
             end else if (push && sp < 7) begin
                 stack_low[sp]  <= pc_low;
                 stack_mid[sp]  <= pc_mid;
                 stack_high[sp] <= pc_high;
                 sp <= sp + 1;
 
-            // POP：スタックからPCを復帰
+            // POP（復帰）
             end else if (pop && sp > 0) begin
                 sp <= sp - 1;
                 pc_low  <= stack_low[sp-1];
                 pc_mid  <= stack_mid[sp-1];
                 pc_high <= stack_high[sp-1];
 
-            // PCインクリメント（低位からキャリー）
+            // PCインクリメント
             end else if (pc_inc) begin
                 if (pc_low == 4'hF) begin
                     pc_low <= 4'h0;
@@ -86,5 +82,4 @@ module stack_pc_4bit (
             end
         end
     end
-
 endmodule
