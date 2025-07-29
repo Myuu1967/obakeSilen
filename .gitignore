@@ -1,0 +1,14 @@
+/Control_Theory/
+/Control_Theory/parameter.txt
+/InvertedPendulum/
+/KATAPARA_counter/
+/LEDs/
+/Pendulum/
+/shapoco/
+
+
+eclipse-workspace/
+civitai/
+*.png
+*.jpg
+*.pdf
