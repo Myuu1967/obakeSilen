@@ -12,3 +12,21 @@ civitai/
 *.png
 *.jpg
 *.pdf
+
+
+Arduino/
+KINGYO/
+KiCAD_lib/
+KiCad7/
+Pico/
+Pico_wifi/
+Tanuki_hiragana.kicad_mod
+Tr_Design/
+X_QR.kicad_mod
+circuitCard/
+dutyRatio555.py
+raspberryPi/
+tanuki.kicad_mod
+test/
+"\342\234\205 10\345\271\264\350\250\210\347\224\273.docx"
+"\345\220\215\345\210\272\345\237\272\346\235\277.docx"
